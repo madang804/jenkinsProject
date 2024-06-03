@@ -5,30 +5,32 @@ pipeline {
       }
   }
   stages {
-    stage('Build') {
+    stage('Install Modules') {
       steps {
-        echo "Building"
+        echo "Installing Modules"
         sh'''
+        python3 -m venv venv
+        ./venv/bin/activate
         pip install -r requirements.txt
+        deactivate
+        '''
+      }
+    }
+    stage('Run App') {
+      steps {
+        echo "Running App"
+        sh'''
         python3 weather-web-api.py
         '''
       }
     }
-    stage('Test') {
+    stage('Testing') {
       steps {
-        echo "Testing"
+        echo "Testing API"
         sh'''
         curl http://localhost:5000/api/v1.0/weather?location=london
         curl http://localhost:5000/api/v1.0/temperature?location=london
         curl http://localhost:5000/api/v1.0/wind?location=london
-        '''
-      }
-    }
-    stage('Deliver') {
-      steps {
-        echo "Delivering"
-        sh'''
-        echo "doing delivery stuff.."
         '''
       }
     }
