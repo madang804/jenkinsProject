@@ -21,6 +21,7 @@ pipeline {
       steps {
         echo "Running App"
         sh'''
+        cd myapp
         python3 weather-web-api.py
         '''
       }
