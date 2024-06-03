@@ -4,15 +4,13 @@ pipeline {
           label 'docker-agent-python'
       }
   }
-  triggers {
-        pollSCM('H/5 * * * *')
-  }
   stages {
     stage('Build') {
       steps {
         echo "Building"
         sh'''
-        echo "doing build stuff.."
+        pip install -r requirements.txt
+        python3 weather-web-api.py
         '''
       }
     }
@@ -20,7 +18,9 @@ pipeline {
       steps {
         echo "Testing"
         sh'''
-        echo "doing test stuff.."
+        curl http://localhost:5000/api/v1.0/weather?location=london
+        curl http://localhost:5000/api/v1.0/temperature?location=london
+        curl http://localhost:5000/api/v1.0/wind?location=london
         '''
       }
     }
